@@ -13,7 +13,7 @@ type PostgresRepository struct {
 }
 
 func NewPostgresRepository() domain.IBook {
-	db, err := sql.Open("postgres", "user=postgres password=yourpassword dbname=yourdb sslmode=disable")
+	db, err := sql.Open("postgres", "user=postgres password=okogiYuzuko18 dbname=libros sslmode=disable")
 	if err != nil {
 		panic(err)
 	}

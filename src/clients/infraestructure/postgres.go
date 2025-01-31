@@ -1,37 +1,55 @@
-package infraestructure
+package infrastructure
 
 import (
-	"fmt"
-	"log"
+	"database/sql"
+	"demo/src/clients/domain"
+	"demo/src/clients/domain/entities"	
+	_ "github.com/lib/pq"
 )
 
-func (pg *Postgres) SaveClient(name string, email string) {
-	query := "INSERT INTO clients (name, email) VALUES ($1, $2)"
-	result, err := pg.conn.ExecutePreparedQuery(query, name, email)
-	if err != nil {
-		log.Fatalf("Error al ejecutar la consulta: %v", err)
-	}
-
-	rowsAffected, _ := result.RowsAffected()
-	if rowsAffected == 1 {
-		log.Printf("[Postgres] - Cliente agregado: %s, Email: %s", name, email)
-	}
+type PostgresRepository struct {
+	db *sql.DB
 }
 
-func (pg *Postgres) GetAllClients() {
-	query := "SELECT * FROM clients"
-	rows := pg.conn.FetchRows(query)
-	defer rows.Close()
-	for rows.Next() {
-		var id int
-		var name, email string
-		if err := rows.Scan(&id, &name, &email); err != nil {
-			fmt.Println("Error al escanear la fila:", err)
-		}
-		fmt.Printf("ID: %d, Nombre: %s, Email: %s\n", id, name, email)
+func NewPostgresRepository() domain.IClient {
+	db, err := sql.Open("postgres", "user=postgres password=okogiYuzuko18 dbname=libros sslmode=disable")
+	if err != nil {
+		panic(err)
 	}
+	return &PostgresRepository{db: db}
+}
 
-	if err := rows.Err(); err != nil {
-		fmt.Println("Error iterando sobre las filas:", err)
+func (repo *PostgresRepository) Save(client *entities.Client) (*entities.Client, error) {
+	query := "INSERT INTO clients (name, email, phone) VALUES ($1, $2, $3) RETURNING id"
+	err := repo.db.QueryRow(query, client.Name, client.Email, client.Phone).Scan(&client.ID)
+	return client, err  // Retorna el cliente y el error
+}
+
+func (repo *PostgresRepository) GetAll() ([]entities.Client, error) {
+	rows, err := repo.db.Query("SELECT id, name, email, phone FROM clients")
+	if err != nil {
+		return nil, err
 	}
+	defer rows.Close()
+
+	var clients []entities.Client
+	for rows.Next() {
+		var client entities.Client
+		if err := rows.Scan(&client.ID, &client.Name, &client.Email, &client.Phone); err != nil {
+			return nil, err
+		}
+		clients = append(clients, client)
+	}
+	return clients, nil
+}
+
+func (repo *PostgresRepository) Update(client *entities.Client) error {
+	query := "UPDATE clients SET name=$1, email=$2, phone=$3 WHERE id=$4"
+	_, err := repo.db.Exec(query, client.Name, client.Email, client.Phone, client.ID)
+	return err
+}
+
+func (repo *PostgresRepository) Delete(id int) error {
+	_, err := repo.db.Exec("DELETE FROM clients WHERE id=$1", id)
+	return err
 }

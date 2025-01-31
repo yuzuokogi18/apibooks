@@ -1,19 +1,19 @@
-package infraestructure
+package infrastructure
 
-import (
-	"demo/src/core"
-	"log"
-)
+import 
+	"demo/src/clients/applications"
 
-type Postgres struct {
-	conn *core.Conn_Postgres
-}
 
-func NewPostgres() *Postgres {
-	conn := core.GetDBPool()
-	if conn.Err != "" {
-		log.Fatalf("Error al configurar el pool de conexiones: %v", conn.Err)
-	}
+func InitDependencies() (*AddClientController, *ListClientsController, *UpdateClientController, *DeleteClientController) {
+	db := NewPostgresRepository() // Asegúrate de implementar esto en tu código
 
-	return &Postgres{conn: conn}
+	addUseCase := application.NewCreateClient(db)
+	listUseCase := application.NewListClients(db)
+	updateUseCase := application.NewUpdateClient(db)
+	deleteUseCase := application.NewDeleteClient(db)
+
+	return NewAddClientController(addUseCase),
+		NewListClientsController(listUseCase),
+		NewUpdateClientController(updateUseCase),
+		NewDeleteClientController(deleteUseCase)
 }

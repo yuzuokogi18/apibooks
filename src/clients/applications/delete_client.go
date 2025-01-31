@@ -1,15 +1,21 @@
 package application
 
 import "demo/src/clients/domain"
-import "demo/src/clients/domain/entities"
-type DeleteClient struct {  // Renombrado para evitar conflicto
+
+type DeleteClient struct {
 	db domain.IClient
 }
 
-func NewDeleteClient(db domain.IClient) *DeleteClient {  // Renombrado
+func NewDeleteClient(db domain.IClient) *DeleteClient {
 	return &DeleteClient{db: db}
 }
 
-func (lc *ListClients) Execute() ([]entities.Client, error) {
-    return lc.db.GetAll()
+// Add the Execute method to handle client deletion
+func (dc *DeleteClient) Execute(id int) error {
+	// Assuming you have a method in IClient to delete a client by ID
+	err := dc.db.Delete(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
