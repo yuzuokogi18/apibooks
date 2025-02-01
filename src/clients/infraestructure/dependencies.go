@@ -5,7 +5,7 @@ import
 
 
 func InitDependencies() (*AddClientController, *ListClientsController, *UpdateClientController, *DeleteClientController) {
-	db := NewPostgresRepository() // Asegúrate de implementar esto en tu código
+	db := NewPostgresRepository() 
 
 	addUseCase := application.NewCreateClient(db)
 	listUseCase := application.NewListClients(db)

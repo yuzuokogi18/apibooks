@@ -10,13 +10,11 @@ type CreateBook struct {
 func NewCreateBook(db domain.IBook) *CreateBook {
 	return &CreateBook{db: db}
 }
-
-// 🚀 Nueva versión de Execute que devuelve el libro y el error
 func (cb *CreateBook) Execute(title string, author string, price float32) (*entities.Book, error) {
 	book := entities.NewBook(title, author, price)
-	savedBook, err := cb.db.Save(book) // Guardamos el libro y obtenemos el error si ocurre
+	savedBook, err := cb.db.Save(book) 
 	if err != nil {
-		return nil, err // Retornamos el error si falla
+		return nil, err 
 	}
-	return savedBook, nil // Retornamos el libro guardado y nil en caso de éxito
+	return savedBook, nil 
 }

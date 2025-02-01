@@ -22,7 +22,7 @@ func NewPostgresRepository() domain.IClient {
 func (repo *PostgresRepository) Save(client *entities.Client) (*entities.Client, error) {
 	query := "INSERT INTO clients (name, email, phone) VALUES ($1, $2, $3) RETURNING id"
 	err := repo.db.QueryRow(query, client.Name, client.Email, client.Phone).Scan(&client.ID)
-	return client, err  // Retorna el cliente y el error
+	return client, err  
 }
 
 func (repo *PostgresRepository) GetAll() ([]entities.Client, error) {

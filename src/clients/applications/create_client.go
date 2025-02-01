@@ -13,6 +13,6 @@ func NewCreateClient(db domain.IClient) *CreateClient {
 
 func (cc *CreateClient) Execute(name string, email string, phone string) error {
 	client := entities.NewClient(name, email, phone)
-	_, err := cc.db.Save(client) // Ignorar el cliente retornado, solo manejar el error
+	_, err := cc.db.Save(client) 
 	return err
 }

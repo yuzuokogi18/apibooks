@@ -11,6 +11,6 @@ func NewListClients(db domain.IClient) *ListClients {
 	return &ListClients{db: db}
 }
 
-func (lc *ListClients) FetchAll() ([]entities.Client, error) {  // Cambio de nombre
+func (lc *ListClients) FetchAll() ([]entities.Client, error) {  
     return lc.db.GetAll()
 }

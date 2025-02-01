@@ -14,8 +14,6 @@ func NewBook(title string, author string, price float32) *Book {
 		Price:  price,
 	}
 }
-
-// 🔥 Agregamos este método para solucionar el error
 func (b *Book) SetID(id int) {
 	b.ID = id
 }

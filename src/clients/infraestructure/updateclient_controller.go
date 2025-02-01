@@ -28,7 +28,7 @@ func (controller *UpdateClientController) Run(c *gin.Context) {
 		return
 	}
 
-	if err := controller.updateClientUseCase.Execute(id, client.Name, client.Email); err != nil {
+	if err := controller.updateClientUseCase.Execute(id, client.Name, client.Email,client.Phone); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

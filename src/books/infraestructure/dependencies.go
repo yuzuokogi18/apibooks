@@ -5,7 +5,7 @@ import (
 )
 
 func InitDependencies() (*AddBookController, *ListBooksController, *UpdateBookController, *DeleteBookController) {
-	db := NewPostgresRepository() // Asegúrate de implementar esto en tu código
+	db := NewPostgresRepository() 
 
 	addUseCase := application.NewCreateBook(db)
 	listUseCase := application.NewListBooks(db)

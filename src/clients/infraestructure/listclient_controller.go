@@ -15,7 +15,7 @@ func NewListClientsController(listClientsUseCase *application.ListClients) *List
 }
 
 func (controller *ListClientsController) Run(c *gin.Context) {
-	clientes, err := controller.listClientsUseCase.FetchAll()  // Cambié de Execute() a FetchAll()
+	clientes, err := controller.listClientsUseCase.FetchAll() 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

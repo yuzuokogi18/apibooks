@@ -11,8 +11,8 @@ func NewUpdateClient(db domain.IClient) *UpdateClient {
 	return &UpdateClient{db: db}
 }
 
-func (uc *UpdateClient) Execute(id int, name string, email string) error {
-	client := entities.NewClient(name, email, "")
+func (uc *UpdateClient) Execute(id int, name string, email string,phone string) error {
+	client := entities.NewClient(name, email, phone)
 	client.SetID(id)
 	return uc.db.Update(client)
 }

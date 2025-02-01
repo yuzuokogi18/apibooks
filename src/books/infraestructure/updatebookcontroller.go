@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"strconv"
 )
-
 type UpdateBookController struct {
 	updateBookUseCase *application.UpdateBook
 }
