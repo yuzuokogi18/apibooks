@@ -6,7 +6,6 @@ import (
 	"demo/src/clients/domain/entities"	
 	_ "github.com/lib/pq"
 )
-
 type PostgresRepository struct {
 	db *sql.DB
 }
@@ -20,9 +19,9 @@ func NewPostgresRepository() domain.IClient {
 }
 
 func (repo *PostgresRepository) Save(client *entities.Client) (*entities.Client, error) {
-	query := "INSERT INTO clients (name, email, phone) VALUES ($1, $2, $3) RETURNING id"
-	err := repo.db.QueryRow(query, client.Name, client.Email, client.Phone).Scan(&client.ID)
-	return client, err  
+	query := "INSERT INTO clients (name, email, phone, password) VALUES ($1, $2, $3, $4) RETURNING id"
+	err := repo.db.QueryRow(query, client.Name, client.Email, client.Phone, client.Password).Scan(&client.ID)
+	return client, err
 }
 
 func (repo *PostgresRepository) GetAll() ([]entities.Client, error) {
@@ -52,4 +51,18 @@ func (repo *PostgresRepository) Update(client *entities.Client) error {
 func (repo *PostgresRepository) Delete(id int) error {
 	_, err := repo.db.Exec("DELETE FROM clients WHERE id=$1", id)
 	return err
+}
+
+// GetByEmail devuelve el cliente que corresponde al email dado, o nil si no se encuentra.
+func (repo *PostgresRepository) GetByEmail(email string) (*entities.Client, error) {
+	var client entities.Client
+	query := "SELECT id, name, email, phone, password FROM clients WHERE email=$1"
+	err := repo.db.QueryRow(query, email).Scan(&client.ID, &client.Name, &client.Email, &client.Phone, &client.Password)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil // No se encontró el cliente
+		}
+		return nil, err // Otro tipo de error
+	}
+	return &client, nil // Cliente encontrado
 }

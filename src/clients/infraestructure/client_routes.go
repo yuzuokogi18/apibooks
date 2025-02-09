@@ -1,22 +1,35 @@
 package infrastructure
+
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 )
 
-type Router struct {
-	engine                  *gin.Engine
+type ClientsRouter struct {
+	engine *gin.Engine
 }
 
-func NewClientsRouter(
-	engine *gin.Engine,
-) *Router {
-	return &Router{
-		engine:                  engine,
+func NewClientsRouter(engine *gin.Engine) *ClientsRouter {
+	return &ClientsRouter{
+		engine: engine,
 	}
 }
-func RegisterClientsRoutes(router *gin.Engine, add *AddClientController, list *ListClientsController, update *UpdateClientController, del *DeleteClientController) {
-	router.POST("/client", add.Run)
-	router.GET("/client", list.Run)
-	router.PUT("/client/:id", update.Run)
-	router.DELETE("/client/:id", del.Run)
+
+func (router *ClientsRouter) Run() {
+	add, list, update, delete, login := InitClientDependencies()
+
+
+	router.engine.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:4200"}, // Permitir solicitudes solo desde el frontend
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
+	
+	router.engine.POST("/clients", add.Run)
+	router.engine.GET("/clients", list.Run)
+	router.engine.PUT("/clients/:id", update.Run)
+	router.engine.DELETE("/clients/:id", delete.Run)
+	router.engine.POST("/login", login.Run)  
 }

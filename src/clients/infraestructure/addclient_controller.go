@@ -24,11 +24,17 @@ func (controller *AddClientController) Run(c *gin.Context) {
 		return
 	}
 
-	err := controller.addClientUseCase.Execute(client.Name,client.Email, client.Phone)
+	if client.Password != client.ConfirmPassword {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Passwords do not match"})
+		return
+	}
+	
+	// Creación del cliente con la contraseña encriptada
+	err := controller.addClientUseCase.Execute(client.Name, client.Email, client.Phone, client.Password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Book created successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Client created successfully"})
 }

@@ -7,4 +7,5 @@ type IClient interface {
 	GetAll() ([]entities.Client, error)
 	Update(client *entities.Client) error
 	Delete(id int) error
+	GetByEmail(email string) (*entities.Client, error) // Aquí se agrega el método GetByEmail
 }

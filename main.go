@@ -8,10 +8,9 @@ import (
 
 func main() {
 	router := gin.Default()
-	addBookController, listBooksController, updateBookController, deleteBookController := booksInfra.InitDependencies()
-	addClientController, listClientsController, updateClientController, deleteClientController := clientsInfra.InitDependencies()
 
-	booksInfra.RegisterBookRoutes(router, addBookController, listBooksController, updateBookController, deleteBookController)
-	clientsInfra.RegisterClientsRoutes(router, addClientController, listClientsController, updateClientController, deleteClientController)
+	
+	booksInfra.NewBooksRouter(router).Run()
+	clientsInfra.NewClientsRouter(router).Run()
 	router.Run(":8080")
 }
